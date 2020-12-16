@@ -24,27 +24,20 @@ namespace BarberShop.App_Start
         // For more information on configuring authentication, please visit https://go.microsoft.com/fwlink/?LinkId=301864
         public void ConfigureAuth(IAppBuilder app)
         {
-            // Enable the application to use a cookie to store information for the signed in user
-            // and to use a cookie to temporarily store information about a user logging in with a third party login provider
             app.UseCookieAuthentication(new CookieAuthenticationOptions());
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
            
 
-            // Configure the application for OAuth based flow
             PublicClientId = "self";
             OAuthOptions = new OAuthAuthorizationServerOptions
             {
                 TokenEndpointPath = new PathString("/login"),
                 Provider = new ApplicationAuthProvider(PublicClientId),
-                AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
-                // In production mode set AllowInsecureHttp = false
                 AllowInsecureHttp = true
             };
 
-            // Enable the application to use bearer tokens to authenticate users
             app.UseOAuthBearerTokens(OAuthOptions);
-            //app.UseCors(CorsOptions.AllowAll);
         }
 
         public void Configuration(IAppBuilder app)

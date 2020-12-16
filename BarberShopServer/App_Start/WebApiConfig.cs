@@ -1,4 +1,5 @@
-﻿using Microsoft.Owin.Security.OAuth;
+﻿using BarberShopServer.Helpers;
+using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Web.Http;
@@ -12,7 +13,7 @@ namespace BarberShop
         {
             config.SuppressDefaultHostAuthentication();
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
-
+            config.Filters.Add(new ExceptionLogFilter());
 
             var cors = new EnableCorsAttribute("*", "*", "*");
             config.EnableCors(cors);

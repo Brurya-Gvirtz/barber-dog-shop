@@ -1,6 +1,7 @@
 ﻿using BarberShop.BL;
 using BarberShop.Entities;
 using Microsoft.Owin.Security.OAuth;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -11,6 +12,7 @@ namespace BarberShop.Providers
     public class ApplicationAuthProvider : OAuthAuthorizationServerProvider
     {
         private readonly string _publicClientId;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public ApplicationAuthProvider(string publicClientId)
         {
@@ -40,18 +42,15 @@ namespace BarberShop.Providers
                 }
 
                 var identity = new ClaimsIdentity(context.Options.AuthenticationType);
-                //identity.AddClaim(new Claim(ClaimTypes.Role, trainer.Role));
                 identity.AddClaim(new Claim(ClaimTypes.Name, customer.Name));
                 identity.AddClaim(new Claim("UserName", customer.UserName));
 
                 await Task.Run(() => context.Validated(identity));
-                //context.Validated(identity);
 
             }
             catch (Exception e)
             {
-                //nlog
-                //DIManager.Container.Resolve<IBaseLogger>().Error("Login error", e);
+                logger.Error(e,"Login error");
             }
         }
 
@@ -67,7 +66,6 @@ namespace BarberShop.Providers
 
         public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
-            // Resource owner password credentials does not provide a client ID.
             if (context.ClientId == null)
             {
                 context.Validated();
